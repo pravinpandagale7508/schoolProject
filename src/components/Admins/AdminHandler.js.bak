@@ -1,0 +1,797 @@
+// JavaScript source code
+import { useState, useEffect, useCallback } from 'react';
+import { REQUEST_ACTIONS, sendRequest, setCookie, getCookie } from '../../utils/Communicator';
+import { useSelector, useDispatch } from 'react-redux';
+import { URL, LANGUAGES, mailroom_id } from '../../constants/global-constants';
+import { onAdminChange, setSenderList, setAdminUser, onParcelCountChange, onManifestChange, onCarrierPrefixChange, onPortOfLodingChange, emptyParcelList, deleteSender, deleteCarrierPrefix, deleteManifest, onUsersChange, onParcelListChange, setImageScanData, onWarehouseChange, setAdmin, onDiscriptionsChange, deleteDiscription, deleteCountryOfImport, deletePortOfLoding, onAirTerminalChange, onAgentCodeChange, onCountryOfImportChange } from '../../reducers/admin-reducers/AdminSlicer';
+import { snackbarToggle } from '../../reducers/snackbarSlicer';
+
+
+var bDownLoad = false;
+var downLoadId = 0;
+
+
+export const checkFtpConn = (callback) => {
+    let loginObj = { opcode: "checkFtpConn" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            callback(response);
+            
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+            callback(error);
+        }
+    });
+}
+export const getUsers = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getUsers" }
+    sendRequest(URL.USER_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.length; i++) {
+                dispatch(onUsersChange(response[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getAdminList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getAdminList" }
+    sendRequest(URL.ADMIN_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.length; i++) {
+                dispatch(onAdminChange(response[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getCarrierPrefixs = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getCarrierPrefixs" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onCarrierPrefixChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getManifestList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getManifestList" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                
+                dispatch(onManifestChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getPortOfLodings = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getPortOfLoading" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onPortOfLodingChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getWarehouseList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "listWarehouse" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onWarehouseChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getAirTerminalList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getAirTerminal" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onAirTerminalChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getCountryOfImportList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getCountryOfImport" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onCountryOfImportChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getDiscriptionsList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getDesc" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onDiscriptionsChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getSenderList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getSenderList" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            dispatch(setSenderList(response.data));
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getAgentCodeList = (dispatch, admin) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getAgentCodeList" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            for (var i = 0; i < response.data.length; i++) {
+                dispatch(onAgentCodeChange(response.data[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getUserInfoByLockerId = (dispatch, lockerId, admin,callBack) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "getUserInfoByLockerId", lockerId: lockerId }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            callBack(response.data)
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const getParcelsList = (dispatch,data, admin) => {
+    let loginObj = { "sessionId": admin.data.session, warehouseId: data.warehouseId, start: data.start, end: data.end, token: data.token, pageNo: data.pageNo, pageSize: data.pageSize, status: data.status, sortBy: data.sortBy, opcode: "getShippingRequestByDateStatusToken" }
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            dispatch(emptyParcelList());
+            dispatch(onParcelCountChange(response.data.count));
+            for (var i = 0; i < response.data.list.length; i++) {
+                console.log(response.data.list[i].warehouseId);
+                dispatch(onParcelListChange(response.data.list[i]));
+            }
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+function send_data_get(url, fileName) {
+    fetch(url)
+        .then(response =>
+            response.blob()
+        )
+        .then(response => {
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+        })
+}
+export const recieptWithBarCode = (dispatch, hawb, admin) => {
+    var url = "/shipping/recieptWithBarCode/" + admin.data.session + "/" + hawb;
+    send_data_get(url, "CWB-" + hawb);
+    
+}
+export const scanImageForData = (dispatch, image, admin,callBack) => {
+    let loginObj = { "sessionId": admin.data.session, opcode: "scanImageForData", mailroom_id: mailroom_id, call_type: "scan", image: image}
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+            console.log(response)
+            dispatch(setImageScanData(JSON.parse(response.data)));
+            callBack();
+            //setIsLoaded(true);
+        },
+        failedCallback: error => {
+
+        }
+    });
+}
+export const updateUser = (dispatch, snackbarToggle, value, admin) => {
+    
+    value.opcode = "updateUser"
+    value.userId = value.id
+    value.sessionId = admin.data.session;
+    sendRequest(URL.USER_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'User added successfully' }));
+            } else {
+                dispatch(deleteCountryOfImport(value));
+                dispatch(snackbarToggle({ type: 'success', message: 'User updated successfully' }));
+            }
+            getUsers(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addManifest = (dispatch, snackbarToggle, value, admin) => {
+    var items = value.manifestItems
+    var rcp = value.params.recieptList
+    var index = 0;
+    var data = {};
+    value.manifestItems = [items[0]]
+    value.params.recieptList = [rcp[0]]
+    value.id = -1;
+    value.opcode = "addManifest"
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            data = response.data
+            value.id = response.data.id;
+            while (index + 1 < items.length) {
+              
+                index++;
+                value.manifestItems = [items[index]]
+                value.params.recieptList = [rcp[index]]
+                sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+                    successCallback: response => {
+                        data = response.data
+                        value.id = response.data.id;
+                    },
+                    failedCallback: error => {
+
+                    },
+                })
+            }
+            try {
+                //dispatch(addUser(response));
+                if (response.misc.CODE == 1) {
+                    dispatch(snackbarToggle({ type: 'success', message: 'Manifest created successfully' }));
+                } else {
+                    dispatch(snackbarToggle({ type: 'error', message: 'Manifest Failed.' }));
+                }
+               // bDownLoad = true;
+                //downLoadId = response.data.id;
+                getManifestList(dispatch, admin);
+                var name = "Manifest.csv"
+                exportToCsv(data, name);
+            } catch (err) {
+                console.log(err)
+            }
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+
+function convertToCSV1(items, header1) {
+    const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+    const header = header1
+    const csv = [
+        header.join(','), // header row first
+        ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+    ].join('\r\n')
+    return csv;
+}
+
+function downLoadPdf(data, fileName) {
+    //var blob = new Blob([data], { type: 'text/pdf;charset=utf-8;' });
+    var blob = new Blob([data]);
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(data, fileName);
+    } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            var url = window.URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+}
+export const exportToCsv = function (data, name) {
+    var manifestItems = data.manifestItems;
+    var recieptList = data.params.recieptList;
+    for (var i = 0; i < recieptList.length; i++) {
+        downLoadPdf(recieptList[i].reciept, recieptList[i].name)
+    }
+    //var headers = Object.keys(manifestItems[0]) 
+    var headers = ["Sender",
+        "SenderAddress",
+        "SenderCountry",
+        "ReceiverName",
+        "ReceiverStreetAddress",
+        "ReceiverZipcode",
+        "ReceiverCity",
+        "ReceiverCountry",
+        "ReceiverPhone",
+        "ReceiverEmail",
+        "ReceiverReceiverId",
+        "ConsignmentNumber",
+        "Reference1",
+        "Reference2",
+        "GoodsDesc",
+        "Cubic",
+        "Weight ",
+        "ChargeWeight",
+        "Quantity",
+        "DeliveryInstructions",
+        "InvoiceValue",
+        "InvoiceCurrency",
+        "InvoiceLineQty",
+        "InvoiceLineAmount",
+        "OriginPort",
+        "GatewayPort",
+        "AgentCode",
+        "CarrierPrefix",
+        "MAWB",
+        "HAWB",
+        "FlightDate",
+        "FlightTime",
+        "FlightNumber",
+        "ETADate",
+        "SendeETATimer",
+        "TotalMasterQuantity",
+        "TotalMasterWeightKgm",
+        "InvoiceLineOriginCountry",
+        "IsAutonomy",
+        "CourierAWBDate",
+        "ReceiverPassportId",
+        "ReceiverPassportCountry",
+        "FreightTotalAmount",
+        "FreightCurrency",
+        "DeliveryMethod",
+        "TotalPackageInMawb",
+        "TotalShipment",
+        "CrateNumber",
+        "StorageSiteCode"]
+    exportCSVFile(headers, manifestItems, name);
+}
+function exportCSVFile(headers, items, fileTitle) {
+
+    var csv = convertToCSV1(items, headers);
+
+    var exportedFilenmae = fileTitle;
+
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, exportedFilenmae);
+    } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            try {
+            var url = window.URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", exportedFilenmae);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+                document.body.removeChild(link);
+            } catch (err) {
+                if (err.message) {
+                    console.log(err.message)
+                }
+                console.log(err)
+            }
+
+        }
+    }
+}
+export const addCountryOfImport = (dispatch, snackbarToggle, value, admin) => {
+    value.like = value.description;
+    if (!value.id) {
+        value.opcode = "addCountryOfImport";
+    } else {
+        value.opcode = "deleteCountryOfImport"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'CountryOfImport Created successfully' }));
+            } else {
+                dispatch(deleteCountryOfImport(value));
+                dispatch(snackbarToggle({ type: 'success', message: 'CountryOfImport deleted successfully' }));
+            }
+            getCountryOfImportList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const ftpExport = (dispatch, snackbarToggle, value, admin) => {
+
+    value.opcode = "ftpExport";
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            if (response.misc.CODE == 1) {
+                dispatch(snackbarToggle({ type: 'success', message: 'Exported succesfully.' }));
+            }
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const deleteManifestItem = (dispatch, snackbarToggle, value, admin) => {
+
+    value.opcode = "deleteManifest";
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            dispatch(deleteManifest(value));
+            dispatch(snackbarToggle({ type: 'success', message: 'Manifest deleted successfully' }));
+            getManifestList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addCarrierPrefix = (dispatch, snackbarToggle, value, admin) => {
+    value.like = value.description;
+    if (!value.id) {
+        value.opcode = "addCarrierPrefix";
+    } else {
+        value.opcode = "deleteCarrierPrefix"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'CarrierPrefix Created successfully' }));
+            } else {
+                dispatch(deleteCarrierPrefix(value));
+                dispatch(snackbarToggle({ type: 'success', message: 'CarrierPrefix deleted successfully' }));
+            }
+            getCarrierPrefixs(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addPortOfLoding = (dispatch, snackbarToggle, value, admin) => {
+    value.like = value.description;
+    if (!value.id) {
+        value.opcode = "addPortOfLoading";
+        value.id = 0;
+    } else {
+        value.opcode = "deletePortOfLoading"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'PortOfLoding added successfully' }));
+            } else {
+                dispatch(deletePortOfLoding(value));
+                dispatch(snackbarToggle({ type: 'success', message: 'PortOfLoding deleted successfully' }));
+            }
+            getPortOfLodings(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addAirTerminal = (dispatch, snackbarToggle, value, admin) => {
+    value.like = value.description;
+    if (!value.id) {
+        value.opcode = "addAirTerminal";
+    } else {
+        value.opcode = "deleteAirTerminal"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'AirTerminal Created successfully' }));
+            } else {
+                dispatch(snackbarToggle({ type: 'success', message: 'AirTerminal deleted successfully' }));
+            }
+            getAirTerminalList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const createShippingRequest = (dispatch, snackbarToggle, value, admin,callBack) => {
+    if (!value.id) {
+        value.opcode = "createShippingRequest";
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'Parcel added successfully' }));
+            } 
+            callBack();
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addAgentCode = (dispatch, snackbarToggle, value, admin) => {
+    value.like = value.description;
+    if (!value.id) {
+        value.opcode = "addAgentCode";
+    } else {
+        value.opcode = "updateAgentCode"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'AgentCode Created successfully' }));
+            } else {
+                dispatch(snackbarToggle({ type: 'success', message: 'AgentCode Updated successfully' }));
+            }
+            getAgentCodeList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addDesc = (dispatch, snackbarToggle, value, admin) => {
+    
+    if (!value.id) {
+        value.like = value.description;
+        value.opcode = "addDesc";
+    } else {
+        value.descId = value.id;
+        value.opcode = "deleteDesc"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'Discription Created successfully' }));
+            } else {
+                dispatch(deleteDiscription(value));
+                dispatch(snackbarToggle({ type: 'success', message: 'Discription Deleted successfully' }));
+            }
+            getDiscriptionsList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addSender = (dispatch, snackbarToggle, value, admin) => {
+    
+    if (!value.id) {
+        value.opcode = "addSender";
+        value.wareHouseId = value.warehouseId;
+    } else {
+        value.descId = value.id;
+        value.opcode = "deleteSender"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'Sender Created successfully' }));
+            } else {
+                dispatch(deleteSender(value));
+                dispatch(snackbarToggle({ type: 'success', message: 'Sender Deleted successfully' }));
+            }
+            getSenderList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const createWarehouse = (dispatch, snackbarToggle, value, admin) => {
+    if (!value.id) {
+        value.opcode = "createWarehouse";
+    } else {
+        value.adminId = value.id;
+        value.opcode = "updateWarehouse"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.SHIPPING_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'Warehouse Created successfully' }));
+            } else {
+                dispatch(snackbarToggle({ type: 'success', message: 'Warehouse Updated successfully' }));
+            }
+            getWarehouseList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const addAdmin = (dispatch, snackbarToggle, value, admin) => {
+    if (value.type === 2) {
+        if (value.permissions.warehouseId) {
+
+        } else {
+            dispatch(snackbarToggle({ type: 'error', message: 'Please Select Warehouse.' }));
+            return;
+        }
+    }
+    if (!value.id) {
+        value.opcode = "addAdmin";
+    } else {
+        value.adminId = value.id;
+        value.opcode = "updateAdmin"
+    }
+    value.sessionId = admin.data.session;
+    sendRequest(URL.ADMIN_HANDLER, REQUEST_ACTIONS.POST, value, {
+        successCallback: response => {
+            console.log(response)
+            //dispatch(addUser(response));
+            if (!value.id) {
+                dispatch(snackbarToggle({ type: 'success', message: 'User Created successfully' }));
+            } else {
+                dispatch(snackbarToggle({ type: 'success', message: 'User Updated successfully' }));
+            }
+            getAdminList(dispatch, admin);
+        },
+        failedCallback: error => {
+
+        },
+    });
+
+}
+export const login = (dispatch, userName, password, setHasError) => {
+    setHasError(false);
+    let loginObj = { "adminName": userName, "password": password, opcode: "login" }
+    sendRequest(URL.ADMIN_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+
+            if (response.misc.CODE === 1) {
+                setCookie("NBO_SESSION_ID", response.session, 30);
+                dispatch(setAdmin(response))
+                pingCall(dispatch, response.session, setHasError);
+                //  ping();
+            } else {
+                setHasError(true);
+            }
+        },
+        failedCallback: error => {
+            setHasError(true);
+        }
+    });
+}
+export const logOutSystem = (dispatch, session, setHasError) => {
+    setHasError(false);
+    let loginObj = { "sessionId": session, opcode: "logout" }
+    sendRequest(URL.ADMIN_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+        successCallback: (response) => {
+
+            if (response.misc.CODE === 1) {
+                setCookie("NBO_SESSION_ID", "", 30);
+                setHasError(false);
+            } else {
+                setHasError(true);
+            }
+        },
+        failedCallback: error => {
+            setHasError(true);
+        }
+    });
+}
+export const pingCall = (dispatch, session, setHasError) => {
+    setHasError(false);
+    let loginObj = { "sessionId": session, opcode: "ping" }
+    if (session) {
+        sendRequest(URL.ADMIN_HANDLER, REQUEST_ACTIONS.POST, loginObj, {
+            successCallback: (response) => {
+                console.log(response)
+                dispatch(setAdminUser(response))
+
+            },
+            failedCallback: error => {
+                setHasError(true);
+            }
+        });
+    }
+}

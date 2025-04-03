@@ -1,0 +1,31 @@
+#root .el-date-editor {
+    input::placeholder,
+    input::-webkit-input-placeholder,
+    input:-moz-placeholder,
+    input::-moz-placeholder,
+    input:-ms-input-placeholder,
+    input::-ms-input-placeholder {
+     color: rgba(0, 0, 0, 0.5);
+     font-weight: bold;
+    }
+
+    .el-input__icon {
+     color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+.MuiDialog-container .el-date-editor {
+    input::placeholder,
+    input::-webkit-input-placeholder,
+    input:-moz-placeholder,
+    input::-moz-placeholder,
+    input:-ms-input-placeholder,
+    input::-ms-input-placeholder {
+     color: rgba(0, 0, 0, 0.6);
+     font-weight: 400;
+    }
+
+    .el-input__icon {
+     color: rgba(0, 0, 0, 0.5);
+    }
+}
