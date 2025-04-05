@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import React from 'react';
-import './login.scss';
+import './login.css';
 import { REQUEST_ACTIONS, sendRequest, setCookie, getCookie } from '../../utils/Communicator';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAdmin } from '../../reducers/admin-reducers/AdminSlicer';
@@ -61,9 +61,8 @@ export const LoginForm = (props) => {
                         <input type="text" className="login-input" onChange={e => setUserName(e.target.value)} />
                         <div className="login-label password" >Password</div>
                         <input type="password" className="login-input" onKeyDown={e => keyPressed(e)} onChange={e => setPassword(e.target.value)} />
-                        <Box sx={{ flexGrow: 1,marginTop:4,marginLeft:4 }}>
-                            <Grid container spacing={2} justifyContent={'space-around'}>
-                                <Grid size={12}>
+                        <Grid container spacing={2} justifyContent={'center'} className='display-flex'>
+                                <Grid size={12} justifyContent={'center'}  className='display-flex'>
                                 <Button variant="contained" onClick={doLogin}>Login</Button>
                                 </Grid>
                                 {/* <Grid size={4}>
@@ -71,7 +70,6 @@ export const LoginForm = (props) => {
                                 </Grid> */}
                                 
                             </Grid>
-                            </Box>
                         <div>
                             
                             

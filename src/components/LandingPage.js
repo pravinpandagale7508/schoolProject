@@ -29,7 +29,7 @@ import { LoginForm } from './LoginForm/LoginForm';
 import { snackbarToggle } from '../reducers/snackbarSlicer';
 import { URL_DATA, LANGUAGES } from '../constants/global-constants';
 import { resetAdminState, setCurrentPage, setIsFtpActive, setFtpTimer } from '../reducers/admin-reducers/AdminSlicer';
-import './MainPage.scss';
+import './MainPage.css';
 
 
 import { AdminsTable } from './Admins/AdminsTable';

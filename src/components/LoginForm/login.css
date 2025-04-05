@@ -1,3 +1,10 @@
+
+.display-flex{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: 10px;
+}
 .login-main-container {
     width: 100%;
     height: 680px;
@@ -26,13 +33,8 @@
         }
 
         .login-title-strong {
-            // font-size: 25px;
-            // font-weight: 600;
-            // letter-spacing: .5px;
-            // line-height: 20px;
-            // margin-bottom: -7px;
-            // color: #00a0d1;
-            background-image: url(/resources/logo.png);
+           
+            background-image: url(../../resources/logo.png);
             height: 133px;
             width: 311px;
             background-repeat: no-repeat;
@@ -41,7 +43,6 @@
         }
 
         .login-title-sub {
-            // color:#00a0d1;
             color: #6b7375;
             font-weight: 400;
             font-size: 18px;

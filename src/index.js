@@ -6,9 +6,9 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
-import DateAdapter from '@mui/lab/AdapterDateFns';
-import { LocalizationProvider } from '@mui/lab';
-import './index.scss';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import './index.css';
 const theme = createTheme({
     palette: {
         secondary: {
@@ -22,7 +22,7 @@ const theme = createTheme({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={DateAdapter}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Provider store={store}>
                 <BrowserRouter>
                     <App />
