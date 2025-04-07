@@ -1,12 +1,11 @@
 import { Dialog, DialogContent, DialogTitle, IconButton, Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Draggable from 'react-draggable';
-
+import ReactDOM from 'react-dom'
 const PaperComponent = props => {
   return (
-    <Draggable handle='#draggable-dialog-title' cancel={'[class*="MuiDialogContent-root"]'}>
+    <>
       <Paper {...props} />
-    </Draggable>
+    </>
   );
 };
 

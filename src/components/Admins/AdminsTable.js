@@ -7,7 +7,7 @@ import { Button, Table, TableBody, TableContainer, Paper, TablePagination } from
 import UserHeader from './AdminHeader';
 import AdminRow from './AdminRow';
 import AddAdmin from './AddAdmin';
-import { getAdminList,deleteAdmin } from './AdminHandler'
+import { getAdminList, deleteAdmin } from './AdminHandler'
 import { REQUEST_ACTIONS, sendRequest } from '../../utils/Communicator';
 import { useSelector, useDispatch } from 'react-redux';
 import { snackbarToggle } from '../../reducers/snackbarSlicer';
@@ -36,7 +36,7 @@ import {
 
 //CustomToolbar tool bar start
 const CustomToolbar = (props) => {
-    const { setOpenOrderModal,setSelectedData} = props;
+    const { setOpenOrderModal, setSelectedData } = props;
     const apiRef = useGridApiContext();
 
     const handleExport = (options) =>
@@ -47,7 +47,7 @@ const CustomToolbar = (props) => {
         size: 'small',
         startIcon: <></>,
     };
-    function addNewAdmin(){
+    function addNewAdmin() {
         setOpenOrderModal(true)
         setSelectedData({})
     }
@@ -80,8 +80,8 @@ export const AdminsTable = () => {
     };
     const onHandleCancelModal = () => setOpenOrderModal(false);
 
-    function loadAdmin(){
-        getAdminList(dispatch, admin,(list)=>{
+    function loadAdmin() {
+        getAdminList(dispatch, admin, (list) => {
             var temp = list.map((data) => {
                 console.log(roles)
                 const name = roles.find((row) => row.name === data?.roles[0].name)?.label;
@@ -97,20 +97,20 @@ export const AdminsTable = () => {
         }
     }, [dispatch, admin]);
 
-    
+
 
     const handleEditClick = (id) => () => {
-       const editedRow = adminList.find((row) => row.id === id);
-       setSelectedData(editedRow)
+        const editedRow = adminList.find((row) => row.id === id);
+        setSelectedData(editedRow)
         onHandleOpenModal()
     };
 
-   
+
 
     const handleDeleteClick = (id) => () => {
         deleteAdmin(dispatch, snackbarToggle, id, loadAdmin);
     };
-    
+
 
     const columns = [
         { field: 'username', headerName: 'User Name', width: 200, editable: true, },
@@ -154,25 +154,27 @@ export const AdminsTable = () => {
 
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             {openOrderModal && (
-                <Dialog maxWidth='sm' open={openOrderModal} title={selectedData.id?'Update':'New'+ `Admin`} onHandleCancel={onHandleCancelModal}>
+                <Dialog maxWidth='sm' open={openOrderModal} title={selectedData.id ? 'Update' : 'New' + `Admin`} onHandleCancel={onHandleCancelModal}>
                     <AddAdmin loadAdmin={loadAdmin} data={selectedData} onHandleCancel={() => setOpenOrderModal(false)} id={null} />
                 </Dialog>
             )}
+            <Box sx={{ height: 610 }}>
+                <DataGrid sx={{ maxHeight: 800 }}
+                    rows={rows}
+                    columns={columns}
+                    slots={{ toolbar: CustomToolbar }}
+                    pageSizeOptions={[5, 10, 25]}
+                    slotProps={{
+                        toolbar: { setOpenOrderModal, setSelectedData },
+                    }}
 
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                slots={{ toolbar: CustomToolbar }}
-                pageSizeOptions={[5, 10]}
-                slotProps={{
-                    toolbar: { setOpenOrderModal,setSelectedData },
-                  }}
+                />
                 
-            />
+            </Box>
 
-            
 
-            {<TableContainer sx={{ maxHeight: 800 }}>
+
+            {false && <TableContainer sx={{ maxHeight: 800 }}>
                 <Table>
                     <UserHeader />
                     <TableBody>

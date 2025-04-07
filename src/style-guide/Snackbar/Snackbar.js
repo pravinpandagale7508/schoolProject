@@ -22,7 +22,10 @@ const ErrorMessage = ({ message }) => {
 
 const SnackbarWrapper = ({ message, open, onClose, type, vertical, horizontal }) => {
   return (
-    <Snackbar anchorOrigin={{ vertical, horizontal }} open={open} onClose={onClose} autoHideDuration={4000}>
+    <Snackbar anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }} open={open} onClose={onClose} autoHideDuration={4000}>
       <Alert severity={type}>
         <ErrorMessage message={message} />
       </Alert>
