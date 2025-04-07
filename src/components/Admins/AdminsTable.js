@@ -33,7 +33,7 @@ import {
     GridRowEditStopReasons,
 } from '@mui/x-data-grid';
 
-
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 //CustomToolbar tool bar start
 const CustomToolbar = (props) => {
     const { setOpenOrderModal, setSelectedData } = props;
@@ -57,8 +57,8 @@ const CustomToolbar = (props) => {
             <Button color="primary" startIcon={<AddIcon />} onClick={addNewAdmin}>
                 Add record
             </Button>
-            <Button color="primary" startIcon={<AddIcon />} onClick={handleExport}>
-                Export
+            <Button color="primary" startIcon={<SystemUpdateAltIcon />} onClick={handleExport}>
+               Export All
             </Button>
             <GridToolbar />
         </GridToolbarContainer>
